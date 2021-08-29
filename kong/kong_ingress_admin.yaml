@@ -1,0 +1,22 @@
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: kong-admin
+  namespace: kong
+spec:
+  rules:
+  - host: kongadmin.mydomain.com
+    http:
+      paths:
+      - backend:
+          serviceName: kong-admin
+          servicePort: 8444
+        path: /
+  tls:
+    - hosts:
+      - kongadmin.mydomain.com
+      secretName: kong-mydomain.com-tls

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: json-api-deployment
+  labels:
+    app: json-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: json-api
+  template:
+    metadata:
+      labels:
+        app: json-api
+    spec:
+      imagePullSecrets:
+        - name: docker-registry
+      containers:
+      - name: json-api
+        image: uytran12/json-api:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 4000

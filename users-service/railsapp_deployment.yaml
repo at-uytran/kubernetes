@@ -1,0 +1,131 @@
+# apiVersion: v1
+# kind: Deployment
+# metadata:
+#   name: railsapp-deployment
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: railsapp
+#   template:
+#     metadata:
+#       labels:
+#         app: railsapp
+#     spec:
+#       containers:
+#       - name: railsapp
+#         image: uytran12/demo-k8s:dev
+#         ports:
+#         - containerPort: 3000
+#         env:
+#           - name: SECRET_KEY_BASE
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: secret-key-base
+#           - name: DATABASE_HOST
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: database-host
+#           - name: DATABASE_PORT
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: database-port
+#           - name: DATABASE_USER_NAME
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: database-user-name
+#           - name: DATABASE_PASSWORD
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: database-password
+#           - name: DATABASE_NAME
+#             valueFrom:
+#               secretKeyRef:
+#                 name: railsapp-secrets
+#                 key: database-name
+
+
+# kind: Deployment
+# metadata:
+#   name: nginx-deployment
+# spec:
+#   selector:
+#     matchLabels:
+#       app: nginx
+#   replicas: 2 # tells deployment to run 2 pods matching the template
+#   template:
+#     metadata:
+#       labels:
+#         app: nginx
+#     spec:
+#       containers:
+#       - name: nginx
+#         image: nginx:1.14.2
+#         ports:
+#         - containerPort: 80
+
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: railsapp-deployment
+  labels:
+    app: railsapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: railsapp
+  template:
+    metadata:
+      labels:
+        app: railsapp
+    spec:
+      imagePullSecrets:
+        - name: docker-registry
+      containers:
+      - name: railsapp
+        image: uytran12/demo-k8s:dev
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+          - name: RAILS_LOG_TO_STDOUT
+            value: 'true'
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: secret-key-base
+          - name: DATABASE_HOST
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: database-host
+          - name: DATABASE_PORT
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: database-port
+          - name: DATABASE_USER_NAME
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: database-user-name
+          - name: DATABASE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: database-password
+          - name: DATABASE_NAME
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: database-name
+          - name: RAILS_ENV
+            value: 'staging'

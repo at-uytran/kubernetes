@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga-prepare
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga-prepare
+  template:
+    metadata:
+      labels:
+        name: konga-prepare
+        app: konga-prepare
+    spec:
+      containers:
+      - name: konga-prepare
+        image: pantsel/konga
+        env:
+        - name: DB_ADAPTER
+          value: postgres
+        - name: DB_HOST
+          value: postgres-db
+        - name: DB_USER
+          value: postgres
+        - name: DB_PASSWORD
+          value: kong
+        - name: DB_DATABASE
+          value: konga
+        - name: DB_PORT
+          value: "5432"
+        - name: KONGA_HOOK_TIMEOUT
+          value: "120000"
+        - name: NODE_ENV
+          value: production
+        - name: TOKEN_SECRET
+          value: some_secret_token
+        command: ["/bin/sh", "-c", "node ./bin/konga.js prepare -a postgres --uri postgresql://postgres:kong@postgres-db:5432/konga"]
+        name: kong-migration

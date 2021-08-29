@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: json-api-service
+  labels:
+    app: json-api
+spec:
+  ports:
+  - port: 4000
+    name: http
+    targetPort: 4000
+  selector:
+    app: json-api

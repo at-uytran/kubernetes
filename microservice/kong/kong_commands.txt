@@ -1,0 +1,14 @@
+curl -i -X POST http://kongadmin:8001/services \
+ --data name=get_simple_html \
+ --data url='https://httpbin.org/html'
+
+
+ curl -i -X POST http://kongadmin:8001/services/get_simple_html/routes \
+  --data 'paths[]=/html' \
+  --data 'name=simple_html'
+
+
+curl -i -X POST http://kongadmin:8001/services/get_simple_html/routes \
+  --data 'paths[]=/simple_html' \
+  --data 'name=simple_html_2'
+  

@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  api:
+    image: demo-k8s:dev
+    volumes:
+      - .:/usr/src/app
+    environment:
+      RAILS_ENV: staging
+      RAILS_LOG_TO_STDOUT: 'true'
+    ports:
+      - "3000:3000"
+  nginx:
+  	image: nginx

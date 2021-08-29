@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kong-migration
+  name: kong-migration
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kong-migration
+  template:
+    metadata:
+      annotations:
+        kuma.io/gateway: enabled
+        prometheus.io/port: "8100"
+        prometheus.io/scrape: "true"
+        traffic.sidecar.istio.io/includeInboundPorts: ""
+      labels:
+        app: kong-migration
+    spec:
+      containers:
+      - env:
+        - name: KONG_DATABASE
+          value: "postgres"
+        - name: KONG_PG_DATABASE
+          value: "kong"
+        - name: KONG_PG_HOST
+          value: "postgres-db"
+        - name: KONG_PG_USER
+          value: "postgres"
+        - name: KONG_PG_PASSWORD
+          value: "kong"
+        image: kong:2.5
+        command: ["/bin/sh", "-c", "kong migrations bootstrap && kong migrations up && kong migrations finish"]
+        name: kong-migration
